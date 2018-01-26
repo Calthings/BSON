@@ -19,7 +19,7 @@ extension Int : BSONBytesProtocol {
         let integer = self.littleEndian
         
         var array = [UInt8]()
-        stride(from: 0, to: 56, by: 8) { i in
+        Swift.stride(from: 0, to: 56, by: 8) { i in
             array.append(numericCast((integer >> i) & 0xFF))
         }
 
@@ -73,7 +73,7 @@ extension UInt : BSONBytesProtocol {
         let integer = self.littleEndian
         
         var array = [UInt8]()
-        stride(from: 0, to: 56, by: 8) { i in
+        Swift.stride(from: 0, to: 56, by: 8) { i in
             array.append(numericCast((integer >> i) & 0xFF))
         }
         
