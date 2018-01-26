@@ -184,7 +184,7 @@ extension Document {
         if let keys = keys {
             self.searchTree[keys]?.recursivelyIndexed = true
         } else if levels == nil || levels == 0 {
-            self.searchTree.recursivelyIndexed = self.searchTree.nodeStorage.reduce(true) { $0.1.recursivelyIndexed && $0.0 }
+            self.searchTree.recursivelyIndexed = self.searchTree.nodeStorage.reduce(true) { $1.recursivelyIndexed && $0 }
         } else if levels == nil {
             self.searchTree.checkFullyIndexed()
         }
