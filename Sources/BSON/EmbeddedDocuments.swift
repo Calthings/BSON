@@ -17,7 +17,7 @@ extension Optional : NilTestable {
     }
 }
 
-extension Dictionary : Primitive {
+extension Dictionary : Primitive  where Key == String, Value: Primitive  {
     private func errorOut() {
         let error = "Only [String : BSON.Primitive] dictionaries are BSON.Primitive. Tried to initialize a document using [\(Key.self) : \(Value.self)]. This will crash on debug and print this message on release configurations."
         assertionFailure(error)
@@ -47,7 +47,7 @@ extension Dictionary : Primitive {
     }
 }
 
-extension Array : Primitive {
+extension Array : Primitive where Element: Primitive {
     public var typeIdentifier: UInt8 { return 0x04 }
     public func makeBinary() -> Data {
         if let `self` = self as? [Primitive] {
