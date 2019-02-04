@@ -26,19 +26,12 @@ extension Dictionary : Primitive  where Key == String, Value: Primitive  {
     
     public var typeIdentifier: UInt8 { return 0x03 }
     public func makeBinary() -> Data {
-        let doc = Document(dictionaryElements: self.flatMap {
-            guard let key = $0.0 as? String else {
-                errorOut()
-                return nil
-            }
-            
-            if let optional = $0.1 as? NilTestable, optional.isNil {
+        let doc = Document(dictionaryElements: self.compactMap {
+            let key: String = $0.0
+            let value: Primitive = $0.1
+
+            if let optional = value as? NilTestable, optional.isNil {
                 return (key, nil)
-            }
-            
-            guard let value = $0.1 as? Primitive else {
-                errorOut()
-                return nil
             }
             
             return (key, value)
@@ -50,20 +43,6 @@ extension Dictionary : Primitive  where Key == String, Value: Primitive  {
 extension Array : Primitive where Element: Primitive {
     public var typeIdentifier: UInt8 { return 0x04 }
     public func makeBinary() -> Data {
-        if let `self` = self as? [Primitive] {
-            return Document(array: self).makeBinary()
-        } else if let `self` = self as? [Encodable] {
-            let `self` = self.flatMap { value in
-                return try? BSONEncoder().encodePrimitive(value)
-            }
-            
-            return Document(array: self).makeBinary()
-        } else {
-            // `assertionFailure` only triggers a crash on debug configurations, not on release.
-            let error = "Only [BSON.Primitive] arrays are BSON.Primitive. Tried to initialize a document using [\(Element.self)]. This will crash on debug and print this message on release configurations."
-            assertionFailure(error)
-            print(error)
-            return ([] as Document).makeBinary()
-        }
+        return Document(array: self).makeBinary()
     }
 }
